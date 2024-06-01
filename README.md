@@ -1,1 +1,0 @@
-# ritcheyandai_stdin_to_binary_i1

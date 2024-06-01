@@ -1,0 +1,375 @@
+jamesdanielmarrsritchey: ```#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter.empty()) {
+        delimiter = " "; // default delimiter is space
+    }
+
+    std::string decimal(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!decimal.empty()) {
+        size_t pos = 0;
+        std::string token;
+        while ((pos = decimal.find(delimiter)) != std::string::npos) {
+            token = decimal.substr(0, pos);
+            std::cout << static_cast<char>(std::stoi(token));
+            decimal.erase(0, pos + delimiter.length());
+        }
+        std::cout << static_cast<char>(std::stoi(decimal));
+    } else {
+        std::cout << "No decimal representation was given." << std::endl;
+    }
+
+    return 0;
+}
+
+/*
+To compile this program, you can use the g++ compiler. Here's the command:
+g++ -o program source.cpp
+
+This will compile the source.cpp file and create an executable named 'program'.
+
+If you don't have the g++ compiler installed, you can install it on Debian with the following command:
+sudo apt-get install build-essential
+
+The 'build-essential' package includes the g++ compiler along with other tools necessary for building software.
+*/
+
+GitHub Copilot: This C++ program reads a sequence of decimal numbers from the standard input, converts each number to a character (using ASCII values), and prints the resulting string. The numbers are expected to be separated by a delimiter, which can be specified via the command line argument `--delimiter`. If no delimiter is specified, the program uses a space as the default delimiter.
+
+Here's a step-by-step explanation of the code:
+
+1. The `getCmdOption` function is a helper function that scans the command line arguments for a specific option and returns its value.
+
+2. In the `main` function, the command line arguments are first converted into a vector of strings for easier handling.
+
+3. The `--delimiter` option is read from the command line arguments. If it's not specified, a space is used as the default delimiter.
+
+4. The program then reads the entire standard input into a string called `decimal`.
+
+5. If the `decimal` string is not empty, the program enters a loop where it repeatedly finds the next occurrence of the delimiter, converts the substring before the delimiter into an integer, casts that integer to a char (using ASCII values), and prints the resulting character. This process continues until no more delimiters are found in the string.
+
+6. If the `decimal` string is empty, the program prints an error message.
+
+7. The program returns 0 to indicate successful execution.
+
+The comments at the end of the code provide instructions on how to compile and run the program using the g++ compiler on a Debian-based Linux system.
+
+jamesdanielmarrsritchey: Instead of converting from decimal, the input from stdin is in binary.
+
+GitHub Copilot: If the input is in binary, you need to convert the binary string to an integer before casting it to a char. You can use the `std::bitset` class from the `<bitset>` library to do this. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter.empty()) {
+        delimiter = " "; // default delimiter is space
+    }
+
+    std::string binary(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!binary.empty()) {
+        size_t pos = 0;
+        std::string token;
+        while ((pos = binary.find(delimiter)) != std::string::npos) {
+            token = binary.substr(0, pos);
+            std::cout << static_cast<char>(std::bitset<8>(token).to_ulong());
+            binary.erase(0, pos + delimiter.length());
+        }
+        std::cout << static_cast<char>(std::bitset<8>(binary).to_ulong());
+    } else {
+        std::cout << "No binary representation was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, `std::bitset<8>(token).to_ulong()` is used to convert the binary string to an unsigned long integer, which is then cast to a char. The `<8>` template argument specifies that the binary string is expected to be 8 bits long, which is the standard size for a byte. If your binary strings can be of different lengths, you may need to adjust this value accordingly.
+
+jamesdanielmarrsritchey: Instead of converting from binary, convert the input to binary.
+
+GitHub Copilot: If you want to convert the input to binary, you can use the `std::bitset` class from the `<bitset>` library. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter.empty()) {
+        delimiter = " "; // default delimiter is space
+    }
+
+    std::string input(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!input.empty()) {
+        size_t pos = 0;
+        std::string token;
+        while ((pos = input.find(delimiter)) != std::string::npos) {
+            token = input.substr(0, pos);
+            std::cout << std::bitset<8>(std::stoi(token)).to_string() << delimiter;
+            input.erase(0, pos + delimiter.length());
+        }
+        std::cout << std::bitset<8>(std::stoi(input)).to_string();
+    } else {
+        std::cout << "No input was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, `std::bitset<8>(std::stoi(token)).to_string()` is used to convert the integer to a binary string. The `<8>` template argument specifies that the binary string is expected to be 8 bits long, which is the standard size for a byte. If your integers can be larger, you may need to adjust this value accordingly.
+
+jamesdanielmarrsritchey: instance of 'std::invalid_argument'
+
+GitHub Copilot: The `std::invalid_argument` exception is thrown by `std::stoi` when the conversion cannot be performed because the string does not represent a valid integer. This can happen if the string contains non-numeric characters or if the number is out of range.
+
+To handle this exception, you can wrap the conversion in a try-catch block. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter.empty()) {
+        delimiter = " "; // default delimiter is space
+    }
+
+    std::string input(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!input.empty()) {
+        size_t pos = 0;
+        std::string token;
+        while ((pos = input.find(delimiter)) != std::string::npos) {
+            token = input.substr(0, pos);
+            try {
+                std::cout << std::bitset<8>(std::stoi(token)).to_string() << delimiter;
+            } catch (std::invalid_argument&) {
+                std::cerr << "Invalid argument: " << token << " is not a valid integer." << std::endl;
+            }
+            input.erase(0, pos + delimiter.length());
+        }
+        try {
+            std::cout << std::bitset<8>(std::stoi(input)).to_string();
+        } catch (std::invalid_argument&) {
+            std::cerr << "Invalid argument: " << input << " is not a valid integer." << std::endl;
+        }
+    } else {
+        std::cout << "No input was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, if `std::stoi` throws an `std::invalid_argument` exception, the catch block catches it and prints an error message to the standard error stream. The program then continues with the next token.
+
+jamesdanielmarrsritchey: The input isn't in binary. It's regular data.
+
+GitHub Copilot: If the input is regular data (i.e., a string of characters), you can convert each character to its binary representation using `std::bitset`. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter.empty()) {
+        delimiter = " "; // default delimiter is space
+    }
+
+    std::string input(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!input.empty()) {
+        for (char c : input) {
+            std::cout << std::bitset<8>(c).to_string() << delimiter;
+        }
+    } else {
+        std::cout << "No input was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, the program reads the entire standard input into a string called `input`. If `input` is not empty, the program iterates over each character in the string, converts it to its binary representation using `std::bitset<8>(c).to_string()`, and prints the resulting binary string. The `<8>` template argument specifies that the binary string is expected to be 8 bits long, which is the standard size for a byte.
+
+jamesdanielmarrsritchey: The default delimiter should be nothing "". The user should also be able to specify "" as the delimiter.
+
+GitHub Copilot: To allow the user to specify an empty string as the delimiter, you can modify the `getCmdOption` function to return an empty string if the option is found but no value is provided. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    else if(itr != end)
+    {
+        return "";
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    std::string input(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!input.empty()) {
+        for (char c : input) {
+            std::cout << std::bitset<8>(c).to_string() << delimiter;
+        }
+    } else {
+        std::cout << "No input was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, if the `--delimiter` option is found but no value is provided, the `getCmdOption` function returns an empty string. This allows the user to specify an empty string as the delimiter by providing the `--delimiter` option without a value. If the `--delimiter` option is not provided at all, the default delimiter is also an empty string.
+
+jamesdanielmarrsritchey: If the delimiter is "\n" it should be treated as a new line. If the deliminter is "\t" it should be treated as a tab.
+
+GitHub Copilot: To handle special characters like `\n` (newline) and `\t` (tab) as delimiters, you can add a condition to check if the delimiter is either of these strings and replace them with the corresponding special character. Here's how you can modify your code:
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <bitset>
+
+std::string getCmdOption(char ** begin, char ** end, const std::string & option)
+{
+    char ** itr = std::find(begin, end, option);
+    if (itr != end && ++itr != end)
+    {
+        return std::string(*itr);
+    }
+    else if(itr != end)
+    {
+        return "";
+    }
+    return "";
+}
+
+int main(int argc, char* argv[]) {
+    std::vector<std::string> args(argv, argv + argc);
+    std::string delimiter = getCmdOption(argv, argv + argc, "--delimiter");
+
+    if (delimiter == "\\n") {
+        delimiter = "\n";
+    } else if (delimiter == "\\t") {
+        delimiter = "\t";
+    }
+
+    std::string input(std::istreambuf_iterator<char>(std::cin), {});
+
+    if (!input.empty()) {
+        for (char c : input) {
+            std::cout << std::bitset<8>(c).to_string() << delimiter;
+        }
+    } else {
+        std::cout << "No input was given." << std::endl;
+    }
+
+    return 0;
+}
+```
+
+In this code, if the delimiter is the string `"\n"`, it is replaced with the newline character `\n`. If the delimiter is the string `"\t"`, it is replaced with the tab character `\t`. This allows the user to specify a newline or tab as the delimiter by providing the `--delimiter` option with the value `"\n"` or `"\t"`, respectively.
